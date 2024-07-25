@@ -23,6 +23,7 @@ Documentation for running the AMD BC-250 powered ASRock mining boards as a deskt
 # Issues
 - Some Vulkan software/games experience major texture corruption.
 - Issues with OpenGL locking up system.
+- Enabling IOMMU causes a GPU related crash on startup. 
 # Todo
 1. GPU
    - Investigate Vulkan corruption issues
