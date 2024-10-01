@@ -38,9 +38,13 @@ Documentation for running the AMD BC-250 powered ASRock mining boards as a deskt
 3. General
    - Produce testing images.
 
-# Testing Images
-- Still WIP
+# Getting it working
+- Images WIP
 - RPMs for patched kernel + mesa should be available. Expect crashes, glitches, and artefacts.
+- AUR builds by @jvyden are available:
+	- Kernel https://aur.archlinux.org/packages/linux-lts-amd-bc250
+	- Mesa https://aur.archlinux.org/packages/mesa-amd-bc250
+
 
 
 # Credits
