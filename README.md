@@ -3,11 +3,11 @@ Documentation for running the AMD BC-250 powered ASRock mining boards as a deskt
 
 # Hardware Notes
 - AMD BC-250 SOC, a cut-down variant of the SOC in the PS5. This provides, roughly, a Ryzen 5 4500 + RX 6700 in terms of performance.
-- 16GB memory, in an 8/8 split to the CPU and GPU. Cannot currently be modified.
+- 16GB memory, in an 8GB/8GB split to the CPU and GPU. Cannot currently be modified.
 - M.2 slot supports NVMe + SATA (Hypothetically).
 - GPU relocking is possible via:
   ```
-  echo vc 0 2000 1100 > /sys/devices/pci0000:00/0000:00:08.1/0000:01:00.0/pp_od_clk_voltage
+  echo vc 0 2000 1000 > /sys/devices/pci0000:00/0000:00:08.1/0000:01:00.0/pp_od_clk_voltage
   echo c > /sys/devices/pci0000:00/0000:00:08.1/0000:01:00.0/pp_od_clk_voltage
   ```
 # Mesa
@@ -22,30 +22,22 @@ Documentation for running the AMD BC-250 powered ASRock mining boards as a deskt
   Premade Mesa builds should be possible, however currently a manual build is required.
 
 # Kernel
-- 6.5 and lower should work without modification. 6.6 should work with commit 5a3ccb1400339268c5e3dc1fa044a7f6c7f59a02 reverted. 
+- ``amdgpu.sg_display=0`` is required to boot kernel 6.6 and later. 
 
 # Issues
-- Some Vulkan software/games experience major texture corruption.
-- Issues with OpenGL locking up system.
+- Issues with OpenGL applications crashing/causing lockups.
 - Enabling IOMMU causes a GPU related crash on startup. 
 
 # Todo
 1. GPU
-   - Investigate Vulkan corruption issues
    - Investigate OpenGL hangs
 2. Memory
    - Investigate modified memory split
-3. General
-   - Produce testing images.
 
 # Getting it working
-- Images WIP
-- RPMs for patched kernel + mesa should be available. Expect crashes, glitches, and artefacts.
+- A Fedora copr repository exists for patched mesa updates: https://copr.fedorainfracloud.org/coprs/mothenjoyer69/bc250-mesa/
 - AUR builds by @jvyden are available:
-	- Kernel https://aur.archlinux.org/packages/linux-lts-amd-bc250
 	- Mesa https://aur.archlinux.org/packages/mesa-amd-bc250
-
-
 
 # Credits
 - [Segfault](https://github.com/TuxThePenguin0)
