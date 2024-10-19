@@ -28,7 +28,7 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
 - ``amdgpu.sg_display=0`` is required to boot kernel 6.6 and later. 
 
 # Firmware
-- A modified firmware dump is available at https://gitlab.com/TuxThePenguin0/bc250-bios/ (Credit and massive thanks to [Segfault](https://github.com/TuxThePenguin0))
+- A modified firmware dump is available at [this repo](https://gitlab.com/TuxThePenguin0/bc250-bios/) (Credit and massive thanks to [Segfault](https://github.com/TuxThePenguin0))
 - Flashing via a hardware programmer is recommended. Get yourself a CH347, or a Raspberry Pi Pico, or anything else capable of recovering from a bad BIOS flash.
 - ***DO NOT FLASH ANYTHING WITHOUT HAVING A KNOWN GOOD BACKUP***
   - SPI flash header pinout: 
