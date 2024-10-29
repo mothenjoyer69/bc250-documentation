@@ -42,7 +42,7 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
     ```
 
 # Additional notes:
-- I have repeatedly recieved requests for help from people who have not read through this page correctly. These boards are extremely weird, and they have a LOT of quirks that need to be worked around. If a fix has been mentioned on this page, its almost 100% required for it to work properly. Please do not purchase one and expect it work like a typical desktop PC.
+- I have repeatedly recieved requests for help from people who have not read through this page correctly. These boards are extremely weird, and they have a LOT of quirks that need to be worked around. If a fix has been mentioned on this page, its almost 100% required for it to work properly. Please do not purchase one and expect it work like a typical desktop PC. No installer images will be provided, unless you want to build them. If so, let me know :) 
 
 
 # Credits
