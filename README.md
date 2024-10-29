@@ -48,3 +48,6 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
 # Credits
 - [Segfault](https://github.com/TuxThePenguin0)
 - [neggles](https://github.com/neggles)
+
+# WALL OF SHAME
+1. ![SHAMEFUL](https://github.com/mothenjoyer69/bc250-documentation/blob/main/images/WALL_OF_SHAME_1.png)
