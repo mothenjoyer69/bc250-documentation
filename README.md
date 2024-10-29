@@ -35,7 +35,7 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
     ![SPI flash header pinout](https://github.com/mothenjoyer69/bc250-documentation/blob/main/images/SPI_PINOUT.jpg)
   - VRAM allocation is configured within: ``Chipset -> GFX Configuration -> GFX Configuration``. Set ``Integrated Graphics Controller`` to forced, and ``UMA Mode`` to  ``UMA_SPECIFIED``, and set the VRAM limit to your desired size. 512MB appears to be the best for general APU use. Credit to [Segfault](https://github.com/TuxThePenguin0) for both the BIOS modification and information on changing the VRAM limit.
 - Many of the newly exposed settings are untested, and could either do nothing, or completely obliterate you and everyone else within a 100km radius. Or maybe they work fine. Be careful, though. 
-
+- Note: If your board shipped with P4.00G (or any other BIOS revision that modified the memory split) you may need to fully clear the firmware settings. Removing the coin cell and using the CLR_CMOS header should suffice.
 # Performance
 - A GPU governor is available [here](https://gitlab.com/TuxThePenguin0/oberon-governor). You should use it.
   - You can also use the following commands to set the clocks manually:
@@ -46,6 +46,7 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
 
 # Additional notes:
 - I have repeatedly recieved requests for help from people who have not read through this page correctly. These boards are extremely weird, and they have a LOT of quirks that need to be worked around. If a fix has been mentioned on this page, its almost 100% required for it to work properly. Please do not purchase one and expect it work like a typical desktop PC.
+
 
 # Credits
 - [Segfault](https://github.com/TuxThePenguin0)
