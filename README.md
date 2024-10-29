@@ -11,11 +11,8 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
 - Upstream Mesa currently lacks support for this specific GPU (Cyan Skillfish), however efforts are underway to get that fixed.
   - A temporary workaround is modifying the following line in ``src/amd/addrlib/src/amdgpu_asic_addr.h``:
     ```
-    #define AMDGPU_NAVI10_RANGE     0x01, 0x0A //# 1  <= x < 10
-    ```
-    and changing it to
-    ```
-    #define AMDGPU_NAVI10_RANGE     0x01, 0x8A //# 1  <= x < 10
+    ---#define AMDGPU_NAVI10_RANGE     0x01, 0x0A //# 1  <= x < 10
+    +++#define AMDGPU_NAVI10_RANGE     0x01, 0x8A //# 1  <= x < 10
     ```
     Patched Mesa builds are available via copr, [here](https://copr.fedorainfracloud.org/coprs/mothenjoyer69/bc250-mesa/). You must set ``RADV_DEBUG=nocompute`` to resolve issues with Vulkan visual issues. Some OpenGL workloads cause a GPU hang, and ROCM will trigger a GPU reset, however rusticl works.
 
