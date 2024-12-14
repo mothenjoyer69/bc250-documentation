@@ -6,6 +6,7 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
 - 16GB GDDR6 shared between the CPU and GPU.
 - M.2 slot supports NVMe (PCIe 2.0 x2) and SATA.
 - I/O includes: 1x DisplayPort, 1x GbE Ethernet, 2x USB 2.0, 2x USB 3.0.
+- NCT6686 SuperIO chip. Force load the ``nct6683`` kernel driver to use.
 
 # Mesa
 - Upstream Mesa currently lacks support for this specific GPU (Cyan Skillfish), however efforts are underway to get that fixed.
