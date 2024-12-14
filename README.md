@@ -15,7 +15,7 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
     ---#define AMDGPU_NAVI10_RANGE     0x01, 0x0A //# 1  <= x < 10
     +++#define AMDGPU_NAVI10_RANGE     0x01, 0x8A //# 1  <= x < 10
     ```
-    Patched Mesa builds are available via copr, [here]( dnf copr enable @exotic-soc/bc250-mesa/). You must set ``RADV_DEBUG=nocompute`` to resolve issues with Vulkan visual issues. Some OpenGL workloads cause a GPU hang, and ROCM will trigger a GPU reset, however rusticl works.
+    Patched Mesa builds are available via copr, [here](https://copr.fedorainfracloud.org/coprs/g/exotic-soc/bc250-mesa/). You must set ``RADV_DEBUG=nocompute`` to resolve issues with Vulkan visual issues. Some OpenGL workloads cause a GPU hang, and ROCM will trigger a GPU reset, however rusticl works.
 
 # Kernel
 - Kernels prior to 6.5 should boot without modification. You may need to disable modesetting until you have installed patched mesa.
@@ -26,13 +26,14 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
 
 # Firmware
 - ***ANY DAMAGE OR ISSUES CAUSED BY FLASHING THIS MODIFIED IMAGE IS YOUR RESPONSIBILITY ENTIRELY***
-- A modified firmware image is available at [this repo](https://gitlab.com/TuxThePenguin0/bc250-bios/) (Credit and massive thanks to [Segfault](https://github.com/TuxThePenguin0))
+- A modified firmware image is available at [this repo](https://gitlab.com/TuxThePenguin0/bc250-bios/) (Credit and massive thanks to [Segfault](https://github.com/TuxThePenguin0)). He is responsible for most of the information on running these boards. Say thank you.
 - Flashing via a hardware programmer is recommended. Get yourself a CH347, or a Raspberry Pi Pico, or anything else capable of recovering from a bad BIOS flash.
 - ***DO NOT FLASH ANYTHING WITHOUT HAVING A KNOWN GOOD BACKUP***
   - SPI flash header pinout: 
     ![SPI flash header pinout](https://github.com/mothenjoyer69/bc250-documentation/blob/main/images/SPI_PINOUT.jpg)
   - VRAM allocation is configured within: ``Chipset -> GFX Configuration -> GFX Configuration``. Set ``Integrated Graphics Controller`` to forced, and ``UMA Mode`` to  ``UMA_SPECIFIED``, and set the VRAM limit to your desired size. 512MB appears to be the best for general APU use. Credit to [Segfault](https://github.com/TuxThePenguin0) for both the BIOS modification and information on changing the VRAM limit.
-- Many of the newly exposed settings are untested, and could either do nothing, or completely obliterate you and everyone else within a 100km radius. Or maybe they work fine. Be careful, though. 
+- Many of the newly exposed settings are untested, and could either do nothing, or completely obliterate you and everyone else within a 100km radius. Or maybe they work fine. Be careful, though.
+- Some information online suggests using Smokeless_UMAF with these boards. This is a bad idea unless you are comfortable with a brick.
 - Note: If your board shipped with P4.00G (or any other BIOS revision that modified the memory split) you may need to fully clear the firmware settings. Removing the coin cell and using the CLR_CMOS header should suffice.
 # Performance
 - A GPU governor is available [here](https://gitlab.com/TuxThePenguin0/oberon-governor). You should use it.
@@ -50,5 +51,5 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
 - [Segfault](https://github.com/TuxThePenguin0)
 - [neggles](https://github.com/neggles)
 
-# WALL OF SHAME
+# WALL OF SHAME!!!!!!!
 1. ![SHAMEFUL](https://github.com/mothenjoyer69/bc250-documentation/blob/main/images/WALL_OF_SHAME_1.png)
