@@ -9,13 +9,13 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
 - NCT6686 SuperIO chip. Force load the ``nct6683`` kernel driver to use.
 
 # Mesa
-- Upstream Mesa currently lacks support for this specific GPU (Cyan Skillfish), however efforts are underway to get that fixed.
+- Upstream Mesa currently lacks support for this specific GPU (Cyan Skillfish).
   - A temporary workaround is modifying the following line in ``src/amd/addrlib/src/amdgpu_asic_addr.h``:
     ```
     ---#define AMDGPU_NAVI10_RANGE     0x01, 0x0A //# 1  <= x < 10
     +++#define AMDGPU_NAVI10_RANGE     0x01, 0x8A //# 1  <= x < 10
     ```
-    Patched Mesa builds are available via copr, [here](https://copr.fedorainfracloud.org/coprs/g/exotic-soc/bc250-mesa/). You must set ``RADV_DEBUG=nocompute`` to resolve issues with Vulkan visual issues. Some OpenGL workloads cause a GPU hang, and ROCM will trigger a GPU reset, however rusticl works.
+    Patched Mesa builds are available via copr, [here](https://copr.fedorainfracloud.org/coprs/g/exotic-soc/bc250-mesa/). You must set ``RADV_DEBUG=nocompute`` to resolve issues with Vulkan visual issues. Some OpenGL workloads cause a GPU hang, and ROCM will trigger an unrecoverable GPU reset.
 
 # Kernel
 - Kernels prior to 6.5 should boot without modification. You may need to disable modesetting until you have installed patched mesa.
@@ -43,8 +43,12 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
     echo c > /sys/devices/pci0000:00/0000:00:08.1/0000:01:00.0/pp_od_clk_voltage
     ```
 
+# Windows:
+- No. 
+
 # Additional notes:
-- I have repeatedly recieved requests for help from people who have not read through this page correctly. These boards are extremely weird, and they have a LOT of quirks that need to be worked around. If a fix has been mentioned on this page, its almost 100% required for it to work properly. Please do not purchase one and expect it work like a typical desktop PC. No installer images will be provided, unless you want to build them. If so, let me know :) 
+- I have repeatedly recieved requests for help from people who have not read through this page correctly. Please do not purchase these boards if any part of this page is confusing. These are not, and will not ever be, standard desktop boards, and expecting them to be is a stupid thing to do.
+- I have seen an alarming number of people I have personally helped out attempt to claim the information uncovered by Segfault as their own. You all suck, credit people properly. Many of these people also seem to fall under the above note.
 
 
 # Credits
