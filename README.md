@@ -46,7 +46,10 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
     echo vc 0 <CLOCK> <VOLTAGE> > /sys/devices/pci0000:00/0000:00:08.1/0000:01:00.0/pp_od_clk_voltage
     echo c > /sys/devices/pci0000:00/0000:00:08.1/0000:01:00.0/pp_od_clk_voltage
     ```
-
+# NCT6686 SuperIO
+- In order for ``lm-sensors`` to recognize the chip (ID ``0xd441``), you must load the nct6683 driver. You can so via ``modprobe nct6683 force=true`` or by adding ``options nct6683 force=true`` to ``/etc/modprobe.d/sensors.conf``
+- Once enabled you should see a bunch more sensor data reported :)
+- Massive thanks to [yeyus](https://github.com/yeyus) for [this issue](https://github.com/mothenjoyer69/bc250-documentation/issues/3).
 
 # Simple setup script
 - This is entirely untested but probably works. Create an issue if it doesn't. Credit to [neggles](https://github.com/neggles).
