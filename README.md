@@ -11,13 +11,10 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
 
 # Mesa
 - Upstream Mesa currently lacks support for this specific GPU (Cyan Skillfish), however efforts are underway to get that fixed.
-  - A temporary workaround is modifying the following line in ``src/amd/addrlib/src/amdgpu_asic_addr.h``:
-    ```
-    ---#define AMDGPU_NAVI10_RANGE     0x01, 0x0A //# 1  <= x < 10
-    +++#define AMDGPU_NAVI10_RANGE     0x01, 0x8A //# 1  <= x < 10
-    ```
-  - Patched Mesa builds are available via copr, [here](https://copr.fedorainfracloud.org/coprs/g/exotic-soc/bc250-mesa/). You must set ``RADV_DEBUG=nocompute`` to resolve issues with Vulkan visual issues. Some OpenGL workloads cause a GPU hang still, and most compute loads will trigger a GPU reset when the compute instance is closed. This would normally be fine, but it is unrecoverable on these boards.
-  - Flatpak applications may fail to run due to	the bundled mesa not having the	required patches.              	                          
+  - A temporary workaround is recompiling Mesa to fake support for the GPU.  You can do this by adding [this](https://raw.githubusercontent.com/mothenjoyer69/bc250-documentation/refs/heads/main/BC250-mesa.patch) patch to Mesa .
+  	- Alternatively, patched Mesa builds are available via copr, [here](https://copr.fedorainfracloud.org/coprs/g/exotic-soc/bc250-mesa/). 
+  - You must set ``RADV_DEBUG=nocompute`` to resolve issues with Vulkan visual issues. Some OpenGL workloads cause a GPU hang still, and most compute loads will trigger a GPU reset when the compute instance is closed. This would normally be fine, but it is unrecoverable on these boards.
+  - Flatpak applications may fail to run due to	the bundled mesa not having the	required patches. 
 
 # Kernel
 - Kernels prior to 6.5 should boot without anything special, however anything newer will boot into a black screen. Add ``amdgpu.sg_display=0`` to your kernel command line to resolve this issue. On Fedora you can do this via ``grubby --update-kernel=ALL --args=console=amdgpu.sg_display=0``.
