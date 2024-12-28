@@ -16,7 +16,7 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
     ---#define AMDGPU_NAVI10_RANGE     0x01, 0x0A //# 1  <= x < 10
     +++#define AMDGPU_NAVI10_RANGE     0x01, 0x8A //# 1  <= x < 10
     ```
-  - Patched Mesa builds are available via copr, [here](https://copr.fedorainfracloud.org/coprs/g/exotic-soc/bc250-mesa/). You must set ``RADV_DEBUG=nocompute`` to resolve issues with Vulkan visual issues. Some OpenGL workloads cause a GPU hang, and ROCM will trigger a GPU reset, however rusticl works.
+  - Patched Mesa builds are available via copr, [here](https://copr.fedorainfracloud.org/coprs/g/exotic-soc/bc250-mesa/). You must set ``RADV_DEBUG=nocompute`` to resolve issues with Vulkan visual issues. Some OpenGL workloads cause a GPU hang still, and most compute loads will trigger a GPU reset when the compute instance is closed. This would normally be fine, but it is unrecoverable on these boards.
   - Flatpak applications may fail to run due to	the bundled mesa not having the	required patches.              	                          
 
 # Kernel
