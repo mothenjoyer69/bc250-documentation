@@ -8,6 +8,7 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
 - I/O includes: 1x DisplayPort, 1x GbE Ethernet, 2x USB 2.0, 2x USB 3.0.
 - NCT6686 SuperIO chip. Force load the ``nct6683`` kernel driver to make use of it for sensors etc.
 
+
 # Mesa
 - Upstream Mesa currently lacks support for this specific GPU (Cyan Skillfish), however efforts are underway to get that fixed.
   - A temporary workaround is modifying the following line in ``src/amd/addrlib/src/amdgpu_asic_addr.h``:
@@ -45,6 +46,11 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
     echo vc 0 <CLOCK> <VOLTAGE> > /sys/devices/pci0000:00/0000:00:08.1/0000:01:00.0/pp_od_clk_voltage
     echo c > /sys/devices/pci0000:00/0000:00:08.1/0000:01:00.0/pp_od_clk_voltage
     ```
+
+
+# Simple setup script
+- This is entirely untested but probably works. Create an issue if it doesn't.
+- Run ``curl -s ill add this url afterwards | sh`` and sit back.
 
 # Windows      
 - No.              
