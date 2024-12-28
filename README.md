@@ -49,7 +49,7 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
 
 
 # Simple setup script
-- This is entirely untested but probably works. Create an issue if it doesn't.
+- This is entirely untested but probably works. Create an issue if it doesn't. Credit to [neggles](https://github.com/neggles).
 - Run ``curl -s https://raw.githubusercontent.com/mothenjoyer69/bc250-documentation/refs/heads/main/fedora-setup.sh | sh`` and sit back.
 
 # Windows      
