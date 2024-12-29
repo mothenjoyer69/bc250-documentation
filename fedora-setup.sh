@@ -6,9 +6,28 @@ if [[ $(id -u) != "0" ]]; then
     exit 1
 fi
 
+# install patched mesa + block any updates from main repos
+echo -n "Adding mesa copr... "
+if [ ! -z $(grep "Nobara" "/etc/system-release") ]; then
+    echo -n "Nobara detected... "
+    sed -i '2s/^/exclude=mesa*\n/ /etc/yum.repos.d/nobara.repo && sed -i '2s/^/exclude=mesa*\n/ /etc/yum.repos.d/nobara-updates.repo
+else 
+    echo -n "Fedora my beloved... "
+    sed -i '2s/^/exclude=mesa*\n/ /etc/yum.repos.d/fedora.repo && sed -i '2s/^/exclude=mesa*\n/ /etc/yum.repos.d/fedora-updates.repo;
+fi
+dnf copr enable @exotic-soc/bc250-mesa 
+dnf upgrade -y 
+ 
 # make sure radv_debug option is set in environment
 echo -n "Setting RADV_DEBUG option... "
 echo 'RADV_DEBUG=nocompute' > /etc/environment
+
+# install segfaults governor
+echo "Installing GPU governor... "
+dnf install libdrm-devel cmake make g++ git
+git clone https://gitlab.com/TuxThePenguin0/oberon-governor.git && cd oberon-governor
+cmake . && make && make install
+systemctl enable --oberon-govenor.service
 
 # make sure amdgpu option is in modprobe file and update initrd
 echo -n "Setting amdgpu module option... "
@@ -21,13 +40,6 @@ echo "Fixing up GRUB config..."
 sed -i 's/nomodeset//g' /etc/default/grub
 sed -i 's/amdgpu\.sg_display=0//g' /etc/default/grub
 grub2-mkconfig -o /etc/grub2.cfg
-
-# install segfaults governor
-echo "Installing GPU governor... "
-dnf install libdrm-devel cmake make g++ git
-git clone https://gitlab.com/TuxThePenguin0/oberon-governor.git && cd oberon-governor
-cmake . && make && make install
-systemctl enable --now oberon-govenor.service
 
 # that should do it
 echo "Done! Rebooting system in 15 seconds, ctrl-C now to cancel..."
