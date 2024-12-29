@@ -17,7 +17,7 @@ else
 fi
 dnf copr enable @exotic-soc/bc250-mesa 
 dnf upgrade -y 
- 
+
 # make sure radv_debug option is set in environment
 echo -n "Setting RADV_DEBUG option... "
 echo 'RADV_DEBUG=nocompute' > /etc/environment
@@ -29,9 +29,11 @@ git clone https://gitlab.com/TuxThePenguin0/oberon-governor.git && cd oberon-gov
 cmake . && make && make install
 systemctl enable --oberon-govenor.service
 
-# make sure amdgpu option is in modprobe file and update initrd
+# make sure amdgpu and nct6683 options are in the modprobe files and update initrd
 echo -n "Setting amdgpu module option... "
 echo 'options amdgpu sg_display=0' > /etc/modprobe.d/options-amdgpu.conf
+echo -n "Setting nct6683 module option... "
+echo 'options nct6683 force=true' > /etc/modprobe.d/sensors.conf
 echo "OK, regenerating initrd (this may take a while)"
 dracut --stdlog=4 --regenerate-all --force
 

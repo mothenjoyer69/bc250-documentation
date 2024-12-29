@@ -7,6 +7,7 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
 - M.2 slot supports NVMe (PCIe 2.0 x2) and SATA.
 - I/O includes: 1x DisplayPort, 1x GbE Ethernet, 2x USB 2.0, 2x USB 3.0.
 - NCT6686 SuperIO chip. Force load the ``nct6683`` kernel driver to make use of it for sensors etc.
+- ~220W TDP, ensure you have a good quality power supply with 2x PCIe 8-pin. If you are doing custom cooling, don't forget the memory and VRMs will run hot. Watch out for hotspots with custom mounting solutions.
 
 
 # Mesa
@@ -45,16 +46,18 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
     ```
 # NCT6686 SuperIO
 - In order for ``lm-sensors`` to recognize the chip (ID ``0xd441``), you must load the nct6683 driver. You can so via ``modprobe nct6683 force=true`` or by adding ``options nct6683 force=true`` to ``/etc/modprobe.d/sensors.conf``
-- Once enabled you should see a bunch more sensor data reported :)
-- Massive thanks to [yeyus](https://github.com/yeyus) for [this issue](https://github.com/mothenjoyer69/bc250-documentation/issues/3).
+- Once enabled you should see a bunch more sensor data reported, including important temps :)
+- Massive thanks to [yeyus](https://github.com/yeyus) for [this info](https://github.com/mothenjoyer69/bc250-documentation/issues/3).
 
 # Simple setup script
-- This is entirely untested but probably works. Create an issue if it doesn't. Credit to [neggles](https://github.com/neggles).
+- This should perform all of the required steps, *except* for flashing the modified firmware.
+- It should work fine on Fedora 40+ (COPR builds are not available for F39) and on Nobara 40+.  
 - Run ``curl -s https://raw.githubusercontent.com/mothenjoyer69/bc250-documentation/refs/heads/main/fedora-setup.sh | sh`` and sit back.
+- Credit to [neggles](https://github.com/neggles).
 
 # Windows      
 - No.              
-- It will boot,	but the	GPU will never function. Everything else seems to work alright,	so I guess you could use it for	non-GPU focused	workloads.
+- It will boot,	but the	GPU is not supported and is unlikely to ever be. Everything else seems to work alright,	so I guess you could use it for	non-GPU focused	workloads.
 
 # Additional notes:
 - I have repeatedly recieved requests for help from people who have not read through this page correctly. Please do not purchase these boards if any part of this page is confusing. These are not, and will not ever be, standard desktop boards, and expecting them to be is a stupid thing to do.
