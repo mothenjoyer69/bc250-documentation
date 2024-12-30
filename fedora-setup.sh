@@ -8,12 +8,13 @@ fi
 
 # install patched mesa + block any updates from main repos
 echo -n "Adding mesa copr... "
-if [ ! -z $(grep "Nobara" "/etc/system-release") ]; then
+if greq -q Nobara "/etc/system-release"; then
     echo -n "Nobara detected... "
-    sed -i '2s/^/exclude=mesa*\n/ /etc/yum.repos.d/nobara.repo && sed -i '2s/^/exclude=mesa*\n/ /etc/yum.repos.d/nobara-updates.repo
+    sed -i '2s/^/exclude=mesa*\n/' /etc/yum.repos.d/nobara.repo 
 else 
     echo -n "Fedora my beloved... "
-    sed -i '2s/^/exclude=mesa*\n/ /etc/yum.repos.d/fedora.repo && sed -i '2s/^/exclude=mesa*\n/ /etc/yum.repos.d/fedora-updates.repo;
+    sed -i '2s/^/exclude=mesa*\n/' /etc/yum.repos.d/fedora.repo
+    sed -i '2s/^/exclude=mesa*\n/' /etc/yum.repos.d/fedora-updates.repo
 fi
 dnf copr enable @exotic-soc/bc250-mesa 
 dnf upgrade -y 
@@ -27,7 +28,7 @@ echo "Installing GPU governor... "
 dnf install libdrm-devel cmake make g++ git
 git clone https://gitlab.com/TuxThePenguin0/oberon-governor.git && cd oberon-governor
 cmake . && make && make install
-systemctl enable --oberon-govenor.service
+systemctl enable oberon-governor.service
 
 # make sure amdgpu and nct6683 options are in the modprobe files and update initrd
 echo -n "Setting amdgpu module option... "
