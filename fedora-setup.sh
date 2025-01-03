@@ -8,7 +8,7 @@ fi
 
 # install patched mesa + block any updates from main repos
 echo -n "Adding mesa copr... "
-if greq -q Nobara "/etc/system-release"; then
+if grep -q Nobara "/etc/system-release"; then
     echo -n "Nobara detected... "
     sed -i '2s/^/exclude=mesa*\n/' /etc/yum.repos.d/nobara.repo 
 else 
