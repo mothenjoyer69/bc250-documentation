@@ -38,12 +38,14 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
 - Note: If your board shipped with P4.00G (or any other BIOS revision that modified the memory split) you may need to fully clear the firmware settings as it can apparently get a little stuck. Removing the coin cell and using the CLR_CMOS header should suffice however you may need to reflash a few times.          
 
 # Performance
-- A GPU governor is available [here](https://gitlab.com/TuxThePenguin0/oberon-governor). You should use it.
-  - You can also use the following commands to set the clocks manually:
+- A GPU governor is available [here](https://gitlab.com/TuxThePenguin0/oberon-governor). You should use it. A modified version is available at [here](https://gitlab.com/mothenjoyer69/oberon-governor) to allow loading values from a config file.
+  - You can also use the following commands to set the clocks manually; 2000/1000 is a safe bet.
     ```
     echo vc 0 <CLOCK> <VOLTAGE> > /sys/devices/pci0000:00/0000:00:08.1/0000:01:00.0/pp_od_clk_voltage
     echo c > /sys/devices/pci0000:00/0000:00:08.1/0000:01:00.0/pp_od_clk_voltage
     ```
+  - It seems most boards are happy around 800mV-1.1V, however some have had issues with running lower voltages.
+
 # NCT6686 SuperIO
 - In order for ``lm-sensors`` to recognize the chip (ID ``0xd441``), you must load the nct6683 driver. You can so via ``modprobe nct6683 force=true`` or by adding ``options nct6683 force=true`` to ``/etc/modprobe.d/sensors.conf``
 - Once enabled you should see a bunch more sensor data reported, including important temps :)
