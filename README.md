@@ -35,7 +35,8 @@ Documentation for running the AMD BC-250 boards for anything other than crypto c
   - VRAM allocation is configured within: ``Chipset -> GFX Configuration -> GFX Configuration``. Set ``Integrated Graphics Controller`` to forced, and ``UMA Mode`` to  ``UMA_SPECIFIED``, and set the VRAM limit to your desired size. 512MB appears to be the best for general APU use. Credit to [Segfault](https://github.com/TuxThePenguin0)
 - Many of the newly exposed settings are untested, and could either do nothing, or completely obliterate you and everyone else within a 100km radius. Or maybe they work fine. Be careful, though.
 - Some information online suggests using Smokeless_UMAF with these boards. This is a bad idea unless you are comfortable with potentially killing your hardware. It does not unlock anything of	interest. 
-- Note: If your board shipped with P4.00G (or any other BIOS revision that modified the memory split) you may need to fully clear the firmware settings as it can apparently get a little stuck. Removing the coin cell and using the CLR_CMOS header should suffice however you may need to reflash a few times.          
+- Note: If your board shipped with P4.00G (or any other BIOS revision that modified the memory split) you may need to fully clear the firmware settings as it can apparently get a little stuck. Removing the coin cell and using the CLR_CMOS header should suffice however you may need to reflash a few times.
+- Note: Enabling IOMMU support in firmware will cause the GPU to fail on startup. There is no known workaround yet.
 
 # Performance
 - A GPU governor is available [here](https://gitlab.com/TuxThePenguin0/oberon-governor). You should use it. A modified version is available at [here](https://gitlab.com/mothenjoyer69/oberon-governor) to allow loading values from a config file.
