@@ -34,6 +34,7 @@ systemctl enable oberon-governor.service
 echo -n "Setting amdgpu module option... "
 echo 'options amdgpu sg_display=0' > /etc/modprobe.d/options-amdgpu.conf
 echo -n "Setting nct6683 module option... "
+echo 'nct6683' > /etc/modules-load.d/99-sensors.conf
 echo 'options nct6683 force=true' > /etc/modprobe.d/options-sensors.conf
 echo "OK, regenerating initrd (this may take a while)"
 dracut --stdlog=4 --regenerate-all --force
