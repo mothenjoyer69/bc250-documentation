@@ -75,3 +75,4 @@ This page is for documentation and information on the ASRock/AMD BC-250, and abo
 
 # WALL OF SHAME!!!!!!!
 1. ![SHAMEFUL](https://github.com/mothenjoyer69/bc250-documentation/blob/main/images/WALL_OF_SHAME_1.png)
+2. ![BOO](https://github.com/mothenjoyer69/bc250-documentation/blob/main/images/WALL_OF_SHAME_2.png)
