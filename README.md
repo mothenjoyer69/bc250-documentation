@@ -29,7 +29,7 @@ This page is for documentation and information on the ASRock/AMD BC-250, and abo
 - Credit to [neggles](https://github.com/neggles) for the original version.
 
 ## Mesa
-- Upstream Mesa currently lacks support for this specific GPU (Cyan Skillfish), however (https://gitlab.freedesktop.org/mesa/mesa/-/issues/11982)[work] is underway to get that fixed.
+- Upstream Mesa currently lacks support for this specific GPU (Cyan Skillfish), however [work](https://gitlab.freedesktop.org/mesa/mesa/-/issues/11982) is underway to get that fixed.
   - A temporary workaround is recompiling Mesa to fake support for the GPU.  You can do this by adding [this](https://raw.githubusercontent.com/mothenjoyer69/bc250-documentation/refs/heads/main/BC250-mesa.patch) patch to Mesa .
   	- Alternatively, patched Mesa builds are available via copr, [here](https://copr.fedorainfracloud.org/coprs/g/exotic-soc/bc250-mesa/). 
   - You must set ``RADV_DEBUG=nocompute`` in ``/etc/environment`` to resolve issues with Vulkan visual issues. 
@@ -57,7 +57,7 @@ This page is for documentation and information on the ASRock/AMD BC-250, and abo
 - Massive thanks to [yeyus](https://github.com/yeyus) for [this info](https://github.com/mothenjoyer69/bc250-documentation/issues/3).
 
 # Performance
-- A GPU governor is available [here]https://gitlab.com/mothenjoyer69/oberon-governor). You should use it. Values are set in /etc/oberon-governor.yaml.
+- A GPU governor is available [here](https://gitlab.com/mothenjoyer69/oberon-governor). You should use it. Values are set in /etc/oberon-governor.yaml.
   - You can also use the following commands to set the clocks manually:
     ```
     echo vc 0 <CLOCK> <VOLTAGE> > /sys/devices/pci0000:00/0000:00:08.1/0000:01:00.0/pp_od_clk_voltage
