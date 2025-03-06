@@ -2,7 +2,7 @@
 This page is for documentation and information on the ASRock/AMD BC-250, and about running it as a general purpose PC. 
 
 # Hardware info
-- Features an AMD BC250 APU, a cut-down variant of the APU in the PS5. It integrates 6x Zen 2 cores, at up to 3.49GHz (ish), as well as a 12CU RDNA2 iGPU.
+- Features an AMD BC250 APU, a cut-down variant of the APU in the PS5. It integrates 6x Zen 2 cores, at up to 3.49GHz (ish), as well as a 24CU RDNA2 iGPU, as opposed to the 36 available in a standard PS5 Ariel SoC.
 - 1x M.2 2280 slot with support for NVMe (PCIe 2.0 x2) and SATA 3.
 - 1x DisplayPort, 1x GbE Ethernet, 2x USB 2.0, 2x USB 3.0.
 - 1x SPI header, 1x auto-start jumper, 1x clear CMOS jumper, 2x mystery headers.
