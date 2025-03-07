@@ -5,9 +5,39 @@ This page is for documentation and information on the ASRock/AMD BC-250, and abo
 - Features an AMD BC250 APU, a cut-down variant of the APU in the PS5. It integrates 6x Zen 2 cores, at up to 3.49GHz (ish), as well as a 24CU RDNA2 iGPU, as opposed to the 36 available in a standard PS5 Ariel SoC.
 - 1x M.2 2280 slot with support for NVMe (PCIe 2.0 x2) and SATA 3.
 - 1x DisplayPort, 1x GbE Ethernet, 2x USB 2.0, 2x USB 3.0.
-- 1x SPI header, 1x auto-start jumper, 1x clear CMOS jumper, 2x mystery headers.
+- 1x SPI header, 1x auto-start jumper, 1x clear CMOS jumper, 5x fans (non-standard connector), 1x TPM header
 - NCT6686 SuperIO chip.
-- 220W TDP, so make sure you have a good quality power supply with 2x PCIe 8-pin connectors available and a plan for cooling it. You can, in a pinch, get away with directly placing two 120mm fans directly on top of the heatsink. If you are doing custom cooling, don't forget the memory!!! Its GDDR6 it runs really hot!!!!
+- 220W TDP, so make sure you have a good quality power supply with PCIe 8-pin connectors available and a plan for cooling it. You can, in a pinch, get away with directly placing two 120mm fans directly on top of the heatsink. If you are doing custom cooling, don't forget the memory!!! Its GDDR6 it runs really hot!!!!
+
+## Hardware Details
+
+Further connector pinouts and a detailed listing of chip ID can be found on the [hardware page](./hardware.md).
+
+### Power
+
+`J1000` is a standard 8-pin 12V PCIe power connector and is sufficient
+
+`J2000` and `J2001` are compatible with 8-pin Molex Micro-Fit connectors and are pinned as below:
+
+```
+   v                     v
+[ LED1 12V 12V 12V ]  [ 12V 12V 12V GND ]
+[ LED2 GND GND GND ]  [ GND GND GND PGD ]
+```
+
+For more detail on the non-power pins, check [their section of the hardware page](./hardware.md#j2000-and-j2001).
+
+### Fans
+
+`CPU_FAN1` is a normal 4-pin PWM-capable fan header. `J4003` exposes `CPU_FAN1` as `F1*` and provides four additional PWM fan control signals as follows, though no power is provided from this connector.
+
+```
+[ GND F1T F2T F3T F4T F5T DET     ]
+[ GND F1P F2P F3P F4P F5P GND GND ]
+   ^
+```
+
+The `F*T` pins are the tachometer outputs from each respective fan, and the `F*P` pins are the PWM outputs that can be sued to control their speeds. Note that the `F1*` pins are electically connected to `CPU_FAN1`.
 
 # Memory
 - 16GB GDDR6 shared between the GPU and CPU. By default, this will be set to either 8GB/8GB (CPU/GPU) or 4GB/12GB, depending on your firmware revision, and requires flashing modified firmware to change. 
