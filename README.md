@@ -5,9 +5,13 @@ This page is for documentation and information on the ASRock/AMD BC-250, and abo
 - Features an AMD BC250 APU, a cut-down variant of the APU in the PS5. It integrates 6x Zen 2 cores, at up to 3.49GHz (ish), as well as a 24CU RDNA2 iGPU, as opposed to the 36 available in a standard PS5 Ariel SoC.
 - 1x M.2 2280 slot with support for NVMe (PCIe 2.0 x2) and SATA 3.
 - 1x DisplayPort, 1x GbE Ethernet, 2x USB 2.0, 2x USB 3.0.
-- 1x SPI header, 1x auto-start jumper, 1x clear CMOS jumper, 2x mystery headers.
+- 1x SPI header, 1x auto-start jumper, 1x clear CMOS jumper, 5x fans (non-standard connector), 1x TPM header
 - NCT6686 SuperIO chip.
 - 220W TDP, so make sure you have a good quality power supply with 2x PCIe 8-pin connectors available and a plan for cooling it. You can, in a pinch, get away with directly placing two 120mm fans directly on top of the heatsink. If you are doing custom cooling, don't forget the memory!!! Its GDDR6 it runs really hot!!!!
+
+## Hardware Details
+
+Connector pinouts and a detailed listing of chip ID can be found on the [Hardware page](./hardware.md).
 
 # Memory
 - 16GB GDDR6 shared between the GPU and CPU. By default, this will be set to either 8GB/8GB (CPU/GPU) or 4GB/12GB, depending on your firmware revision, and requires flashing modified firmware to change. 
