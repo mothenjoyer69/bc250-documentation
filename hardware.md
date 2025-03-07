@@ -1,6 +1,6 @@
 # Connectors
 
-This list of connectors proceeds around the board clockwise from the M.2 header.
+This list of connectors proceeds around the board clockwise from the M.2 header. Pin 1 is generally indicated on the PCB by a little white silkscreen triangle, replicated here with a `>` or `^` symbol.
 
 ## M2_1
 
@@ -80,16 +80,14 @@ This is a normal four-pin PWM-capable fan header.
 
 As viewed with the PCB "down"
 ```
-   v              v
-[ LED1 V V V ]  [ V V V G ]
-[ LED2 G G G ]  [ G G G P ]
+   v                     v
+[ LED1 12V 12V 12V ]  [ 12V 12V 12V GND ]
+[ LED2 GND GND GND ]  [ GND GND GND PGD ]
 ```
 
 | Pin | Purpose |
-|-----|---------|
-| `V`   | 12V Power |
-| `G`   | Ground |
-| `P`   | `PGOOD`; 5V when PSU2 is connected to the rack chassis |
+|--------|---------|
+| `PGD`  | `PGOOD`; 5V when PSU2 is connected to the rack chassis |
 | `LED1` | Active-low LED output; mirrors green backplane LED |
 | `LED2` | Active-low LED output; mirrors red backplane LED |
 
@@ -115,6 +113,7 @@ This is a standard 8-pin PCIe connector and is perfectly suitable for powering a
 ```
 [ GND SCLK MOSI UNK ]
 [ VCC  CS  MISO     ]
+   ^
 ```
 
 This 2.54mm header can be used to reflash the SPI flash chip which carries the firmware ("BIOS").
@@ -164,8 +163,6 @@ DBRDY1 -- [ 15  16 ] -- DBREQ_L
 Note that pins `TEST18`, `TEST19`, `DBRDY0` are left floating on this PCB.
 
 # Auxiliary Chip ID
-
-We all know that we've got a cut-down PS5 APU and a pile of GDDR6, What else is on the board?
 
 ![Top of the BC-250 board, with chips numbered](images/annotated-chip-id.jpg)
 
