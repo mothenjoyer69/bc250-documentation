@@ -64,10 +64,15 @@ The `F*T` pins are the tachometer outputs from each respective fan, and the `F*P
 - If your distro doesn't ship a new enough Mesa, either:
   - Rebuild Mesa manually with this [this](https://raw.githubusercontent.com/mothenjoyer69/bc250-documentation/refs/heads/main/BC250-mesa.patch) patch.
   - Alternatively, patched Mesa builds are available via copr, [here](https://copr.fedorainfracloud.org/coprs/g/exotic-soc/bc250-mesa/).
-    
+   
 ## Kernel
 - You may need to add ``nomodeset`` to the kernel command line prior to installing the correct mesa version. Don't forget to remove this once they are installed.
 - Kernels older than 6.11ish may need ``amdgpu.sg_display=0`` to be set.
+
+## Simple setup script
+- This script is designed for Fedora 40+ and should set up everything needed properly, except for flashing the modified firmware. Run at your own risk.
+  - ``curl -s https://raw.githubusercontent.com/mothenjoyer69/bc250-documentation/refs/heads/main/fedora-setup.sh | sh``
+- Credit to [neggles](https://github.com/neggles) for the original version.
   
 # Advanced
 ## Modified firmware
