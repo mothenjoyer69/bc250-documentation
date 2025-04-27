@@ -81,7 +81,11 @@ The `F*T` pins are the tachometer outputs from each respective fan, and the `F*P
 - Flashing via a hardware programmer is recommended. Get yourself a CH347, or a Raspberry Pi Pico, or anything else capable of recovering from a bad BIOS flash.
 - ***DO NOT FLASH ANYTHING WITHOUT HAVING A KNOWN GOOD BACKUP***
   - SPI flash header pinout:
-    ![SPI flash header pinout](https://github.com/mothenjoyer69/bc250-documentation/blob/main/images/SPI_PINOUT.jpg)
+    ```
+      [ GND SCLK MOSI    ]
+      [ VCC  CS  MISO  ? ]
+         ^
+      ```
 - VRAM allocation is configured within: ``Chipset -> GFX Configuration -> GFX Configuration``. Set ``Integrated Graphics Controller`` to forced, and ``UMA Mode`` to  ``UMA_SPECIFIED``, and set the VRAM limit to your desired size. 512MB appears to be the best for general APU use. You will have a worse experience overall with a 4/12 split, outside of specific circumstances. Credit to [Segfault](https://github.com/TuxThePenguin0)
 - Many of the newly exposed settings are untested, and could either do nothing, or completely obliterate you and everyone else within a 100km radius. Or maybe they work fine. Be careful, though.
      - There are a number of firmware images floating around with "everything unlocked!". Be very, very cautious of using these.
