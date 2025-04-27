@@ -67,7 +67,8 @@ The `F*T` pins are the tachometer outputs from each respective fan, and the `F*P
     
 ## Kernel
 - You may need to add ``nomodeset`` to the kernel command line prior to installing the correct mesa version. Don't forget to remove this once they are installed.
-
+- Kernels older than 6.11ish may need ``amdgpu.sg_display=0`` to be set.
+  
 # Advanced
 ## Modified firmware
 ## ***ANY DAMAGE OR ISSUES CAUSED BY FLASHING THIS MODIFIED IMAGE IS YOUR RESPONSIBILITY ENTIRELY***
