@@ -97,7 +97,7 @@ The `F*T` pins are the tachometer outputs from each respective fan, and the `F*P
 - Massive thanks to [yeyus](https://github.com/yeyus) for [this info](https://github.com/mothenjoyer69/bc250-documentation/issues/3).
 
 ## Performance
-- A GPU governor is available [here](https://gitlab.com/mothenjoyer69/oberon-governor). You should use it. Values are set in /etc/oberon-governor.yaml. The defaults should be fine, but you can bump them up if you are experiencing instability (or want a nice space heater)
+- A GPU governor is available [here](https://gitlab.com/mothenjoyer69/oberon-governor). You should use it. Values are set in /etc/oberon-config.yaml. The defaults should be fine, but you can bump them up if you are experiencing instability (or want a nice space heater)
   - You can also use the following commands to set the clocks manually:
     ```
     echo vc 0 <CLOCK> <VOLTAGE> > /sys/devices/pci0000:00/0000:00:08.1/0000:01:00.0/pp_od_clk_voltage
