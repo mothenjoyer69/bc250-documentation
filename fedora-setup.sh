@@ -8,15 +8,13 @@ fi
 
 # install patched mesa + block any updates from main repos
 echo -n "Adding mesa copr... "
-if grep -q Nobara "/etc/system-release"; then
-    echo -n "Nobara detected... "
-    sed -i '2s/^/exclude=mesa*\n/' /etc/yum.repos.d/nobara.repo 
-else 
-    echo -n "Fedora my beloved... "
-    sed -i '2s/^/exclude=mesa*\n/' /etc/yum.repos.d/fedora.repo
-    sed -i '2s/^/exclude=mesa*\n/' /etc/yum.repos.d/fedora-updates.repo
-fi
-dnf copr enable @exotic-soc/bc250-mesa -y
+dnf copr enable danayer/mesa-git -y
+dnf copr enable danayer/libdrm-git -y
+dnf copr enable danayer/linux-firmware-git -y
+dnf copr enable danayer/Vulkan-Git -y
+dnf copr enable danayer/virglrenderer-git -y
+# dnf copr enable @exotic-soc/bc250-mesa -y
+dnf update --refresh   -y
 dnf upgrade -y 
 
 # make sure radv_debug option is set in environment
@@ -48,3 +46,4 @@ grub2-mkconfig -o /etc/grub2.cfg
 # that should do it
 echo "Done! Rebooting system in 15 seconds, ctrl-C now to cancel..."
 sleep 15 && systemctl reboot
+
