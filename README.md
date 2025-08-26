@@ -64,6 +64,7 @@ The `F*T` pins are the tachometer outputs from each respective fan, and the `F*P
 - If your distro doesn't ship a new enough Mesa, either:
   - Rebuild Mesa manually with this [this](https://raw.githubusercontent.com/mothenjoyer69/bc250-documentation/refs/heads/main/BC250-mesa.patch) patch.
   - Alternatively, patched Mesa builds are available via copr, [here](https://copr.fedorainfracloud.org/coprs/g/exotic-soc/bc250-mesa/).
+- You may also need to set ``ttm.pages_limit=3959290`` and ``ttm.page_pool_size=3959290`` as kernel options to access more than 8GB of the shared memory. Thanks Magnap :)
    
 ## Kernel
 - You may need to add ``nomodeset`` to the kernel command line prior to installing the correct mesa version. Don't forget to remove this once they are installed.
