@@ -1,0 +1,434 @@
+# Runbook: Fedora Server + llama.cpp (GPU Vulkan) — BC‑250 Fleet
+
+> **Goal**: Reproducible setup for AMD BC‑250 nodes serving **llama.cpp** (text or vision) via **Vulkan**, with systemd auto‑start, firewall, health checks, monitoring, **Ansible** automation (incl. model sync + logs), and a **future plan** for firmware 4/12 split.
+
+---
+
+## 0) Requirements
+- **Hardware**: AMD BC‑250 (APU RDNA1/2), 8 GB UMA VRAM; ≥16 GB system RAM; NVMe ≥128 GB.
+- **OS**: Fedora Server **42** (minimal install).
+- **Network**: DHCP/static IP; open TCP **8080** (HTTP).
+- **Models**: `.gguf` main model and, for VL models, a matching **mmproj‑f16.gguf**.
+
+---
+
+## 1) Fedora install (single node)
+1. Download ISO: https://fedoraproject.org/server/download
+2. Create boot USB (Rufus/Ventoy/Balena) and install minimal (no GUI). Enable SSH.
+3. Optional: Grow root partition using **Cockpit** (https://IP:9090 → *Storage* → nvme0n1p3 → **Grow**), then:
+   ```bash
+   sudo xfs_growfs /
+   ```
+
+---
+
+## 2) Base packages + services
+```bash
+sudo dnf -y update
+sudo dnf -y install \
+  git cmake ninja-build gcc-c++ make python3 python3-pip pkgconf-pkg-config \
+  curl wget unzip tar jq \
+  glslang glslang-devel spirv-tools spirv-tools-devel \
+  vulkan-headers vulkan-loader vulkan-loader-devel \
+  cockpit cockpit-pcp pcp pcp-zeroconf \
+  rsync openssh-clients \
+  radeontop
+
+sudo systemctl enable --now cockpit.socket pmcd
+```
+> If `cmake` later says **glslc missing**, see §4.
+
+---
+
+## 3) Verify Vulkan
+```bash
+vulkaninfo --summary | sed -n '1,120p'
+vulkaninfo | grep -nA3 VK_EXT_memory_budget
+```
+Expect device **RADV GFX10xx** (or similar) and Vulkan 1.3+.
+
+---
+
+## 4) If `glslc` is missing (choose one)
+**A — Prebuilt Vulkan SDK (fast)**
+- Extract LunarG SDK into `/opt/vulkan-sdk/x86_64` and add:
+  ```bash
+  echo 'export VULKAN_SDK=/opt/vulkan-sdk/x86_64' | sudo tee /etc/profile.d/vulkan-sdk.sh
+  echo 'export PATH=$VULKAN_SDK/bin:$PATH' | sudo tee -a /etc/profile.d/vulkan-sdk.sh
+  . /etc/profile.d/vulkan-sdk.sh && which glslc && glslc --version
+  ```
+**B — Build Shaderc**
+```bash
+mkdir -p ~/src && cd ~/src
+rm -rf shaderc && git clone --recurse-submodules https://github.com/google/shaderc.git
+cd shaderc && cmake -B build -S . -GNinja -DSHADERC_SKIP_TESTS=ON
+cmake --build build -j && sudo cmake --install build
+which glslc && glslc --version
+```
+
+---
+
+## 5) Models directory
+```bash
+sudo mkdir -p /data/Models && sudo chown -R $USER:$USER /data
+# Place model + (if VL) mmproj in /data/Models
+ls -lh /data/Models
+```
+
+---
+
+## 6) Build llama.cpp with Vulkan
+```bash
+mkdir -p ~/src && cd ~/src
+rm -rf llama.cpp && git clone https://github.com/ggerganov/llama.cpp.git
+cd llama.cpp
+cmake -B build -S . -GNinja -DGGML_VULKAN=ON
+cmake --build build -j
+```
+Environment for RADV (shell or service):
+```bash
+export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/radeon_icd.x86_64.json
+```
+
+---
+
+## 7) Manual run (reference)
+**Default (Q6_K, VL, port 8080)**
+```bash
+pkill -f llama-server 2>/dev/null
+export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/radeon_icd.x86_64.json
+~/src/llama.cpp/build/bin/llama-server \
+  -m "/data/Models/Qwen2.5-VL-7B-Instruct-Q6_K.gguf" \
+  --mmproj "/data/Models/mmproj-Qwen2.5-VL-7B-Instruct-f16.gguf" \
+  --host 0.0.0.0 --port 8080 \
+  --threads 12 --ctx-size 8192 --batch-size 128 --parallel 1 \
+  --cont-batching -ngl -1 --no-warmup
+```
+Open firewall + smoke test:
+```bash
+sudo firewall-cmd --zone=public --add-port=8080/tcp --permanent && sudo firewall-cmd --reload
+curl -s http://127.0.0.1:8080/health
+```
+Web UI: `http://NODE_IP:8080/`
+
+---
+
+## 8) systemd service (auto‑start)
+```bash
+sudo tee /etc/systemd/system/sancho.service >/dev/null << 'EOF'
+[Unit]
+Description=Sancho (llama.cpp + Qwen2.5-VL-7B Q6_K)
+After=network-online.target
+Wants=network-online.target
+[Service]
+User=guillermo
+Environment=VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/radeon_icd.x86_64.json
+ExecStart=/home/guillermo/src/llama.cpp/build/bin/llama-server \
+  -m /data/Models/Qwen2.5-VL-7B-Instruct-Q6_K.gguf \
+  --mmproj /data/Models/mmproj-Qwen2.5-VL-7B-Instruct-f16.gguf \
+  --host 0.0.0.0 --port 8080 \
+  --threads 12 --ctx-size 8192 --batch-size 128 --parallel 1 \
+  --cont-batching -ngl -1 --no-warmup
+Restart=always
+RestartSec=3
+WorkingDirectory=/home/guillermo
+StandardOutput=journal
+StandardError=journal
+[Install]
+WantedBy=multi-user.target
+EOF
+sudo systemctl daemon-reload && sudo systemctl enable --now sancho
+```
+
+---
+
+## 9) Monitoring (quick)
+- **GPU live**: `sudo radeontop -i 1`
+- **Clocks/temps**: `sudo mount -t debugfs none /sys/kernel/debug || true && sudo watch -n1 'cat /sys/kernel/debug/dri/0/amdgpu_pm_info'`
+- **Cockpit history**: `https://IP:9090/metrics` (PCP already enabled). For GPU graphs via PCP RSMI, install `pcp-pmda-rsmi` if available; else consider Grafana + amdgpu‑exporter (Podman).
+
+---
+
+# Ansible Automation (Fleet of 210)
+
+## A) Project layout
+```
+sancho-ansible/
+├─ inventory.ini
+├─ site.yml
+├─ group_vars/
+│  └─ all.yml
+└─ roles/
+   ├─ base/     └─ tasks/main.yml
+   ├─ vulkan/   └─ tasks/main.yml
+   ├─ llama/    └─ tasks/main.yml
+   ├─ firewall/ └─ tasks/main.yml
+   ├─ verify/   └─ tasks/main.yml
+   ├─ models_sync/ └─ tasks/main.yml
+   └─ logs/        └─ tasks/main.yml
+```
+
+## B) Inventory
+```ini
+[bc250]
+node001 ansible_host=192.168.87.101
+node002 ansible_host=192.168.87.102
+# ... up to your 210 nodes
+```
+
+## C) Global variables (`group_vars/all.yml`)
+```yaml
+user_name: guillermo
+repo_llama: https://github.com/ggerganov/llama.cpp.git
+llama_src: /home/{{ user_name }}/src/llama.cpp
+models_dir: /data/Models
+model_main: Qwen2.5-VL-7B-Instruct-Q6_K.gguf
+model_mmproj: mmproj-Qwen2.5-VL-7B-Instruct-f16.gguf
+host_bind: 0.0.0.0
+http_port: 8080
+threads: 12
+ctx_size: 8192
+batch_size: 128
+parallel_reqs: 1
+ngl: -1
+svc_name: sancho
+# model sync source (pick one)
+# rsync: rsync://models-gw:873/gguf/
+# http:  https://models-gw.local/gguf/
+model_source_type: rsync   # rsync | http | none
+model_source_url: rsync://models-gw:873/gguf/
+model_files:
+  - Qwen2.5-VL-7B-Instruct-Q6_K.gguf
+  - mmproj-Qwen2.5-VL-7B-Instruct-f16.gguf
+logs_dir: /var/log/sancho
+```
+
+## D) Playbook (`site.yml`)
+```yaml
+- hosts: bc250
+  become: yes
+  vars_files: [group_vars/all.yml]
+  roles:
+    - base
+    - vulkan
+    - llama
+    - models_sync
+    - firewall
+    - logs
+    - verify
+```
+
+## E) Roles — tasks
+### 1) `roles/base/tasks/main.yml`
+```yaml
+- name: Update & install base packages
+  dnf:
+    name:
+      - git
+      - cmake
+      - ninja-build
+      - gcc-c++
+      - make
+      - python3
+      - pkgconf-pkg-config
+      - curl
+      - jq
+      - cockpit
+      - cockpit-pcp
+      - pcp
+      - pcp-zeroconf
+      - rsync
+      - radeontop
+    state: present
+    update_cache: yes
+- name: Enable cockpit + pmcd
+  systemd: { name: "{{ item }}", enabled: yes, state: started }
+  loop: [cockpit.socket, pmcd]
+```
+
+### 2) `roles/vulkan/tasks/main.yml`
+```yaml
+- name: Install Vulkan toolchain
+  dnf:
+    name:
+      - glslang
+      - glslang-devel
+      - spirv-tools
+      - spirv-tools-devel
+      - vulkan-headers
+      - vulkan-loader
+      - vulkan-loader-devel
+    state: present
+- name: Ensure RADV ICD var in profile
+  lineinfile:
+    path: /etc/profile.d/vulkan.sh
+    line: 'export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/radeon_icd.x86_64.json'
+    create: yes
+```
+
+### 3) `roles/llama/tasks/main.yml`
+```yaml
+- name: Ensure models dir
+  file: { path: "{{ models_dir }}", state: directory, owner: "{{ user_name }}", group: "{{ user_name }}", mode: '0775' }
+- name: Clone llama.cpp
+  git:
+    repo: "{{ repo_llama }}"
+    dest: "{{ llama_src }}"
+    version: HEAD
+    force: yes
+  become: false
+  become_user: "{{ user_name }}"
+- name: Configure (Vulkan)
+  command: cmake -B build -S . -GNinja -DGGML_VULKAN=ON
+  args: { chdir: "{{ llama_src }}" }
+  become: false
+  become_user: "{{ user_name }}"
+- name: Build
+  command: cmake --build build -j
+  args: { chdir: "{{ llama_src }}" }
+  become: false
+  become_user: "{{ user_name }}"
+- name: Install systemd unit
+  copy:
+    dest: /etc/systemd/system/{{ svc_name }}.service
+    content: |
+      [Unit]
+      Description=Sancho (llama.cpp + Qwen2.5-VL-7B Q6_K)
+      After=network-online.target
+      Wants=network-online.target
+      [Service]
+      User={{ user_name }}
+      Environment=VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/radeon_icd.x86_64.json
+      ExecStart={{ llama_src }}/build/bin/llama-server \
+        -m {{ models_dir }}/{{ model_main }} \
+        --mmproj {{ models_dir }}/{{ model_mmproj }} \
+        --host {{ host_bind }} --port {{ http_port }} \
+        --threads {{ threads }} --ctx-size {{ ctx_size }} --batch-size {{ batch_size }} \
+        --parallel {{ parallel_reqs }} --cont-batching -ngl {{ ngl }} --no-warmup
+      Restart=always
+      RestartSec=3
+      WorkingDirectory=/home/{{ user_name }}
+      StandardOutput=journal
+      StandardError=journal
+      [Install]
+      WantedBy=multi-user.target
+- name: Reload+enable service
+  systemd: { name: "{{ svc_name }}", daemon_reload: yes, enabled: yes, state: started }
+```
+
+### 4) `roles/models_sync/tasks/main.yml`
+```yaml
+- name: Create models directory
+  file: { path: "{{ models_dir }}", state: directory, owner: "{{ user_name }}", group: "{{ user_name }}", mode: '0775' }
+- name: Sync models via rsync
+  when: model_source_type == 'rsync'
+  synchronize:
+    src: "{{ model_source_url }}"
+    dest: "{{ models_dir }}/"
+    mode: pull
+    rsync_opts: ["--no-perms", "--omit-dir-times"]
+- name: Download models via HTTP
+  when: model_source_type == 'http'
+  get_url:
+    url: "{{ model_source_url }}{{ item }}"
+    dest: "{{ models_dir }}/{{ item }}"
+    mode: '0644'
+  loop: "{{ model_files }}"
+```
+
+### 5) `roles/firewall/tasks/main.yml`
+```yaml
+- name: Open HTTP port
+  command: firewall-cmd --permanent --add-port={{ http_port }}/tcp
+  register: fw
+  changed_when: "'already' not in fw.stdout"
+  failed_when: false
+- name: Reload firewalld
+  command: firewall-cmd --reload
+  when: fw is changed
+  failed_when: false
+```
+
+### 6) `roles/logs/tasks/main.yml`
+```yaml
+- name: Ensure logs directory
+  file: { path: "{{ logs_dir }}", state: directory, mode: '0755' }
+- name: GPU usage logger service (radeontop)
+  copy:
+    dest: /etc/systemd/system/radeontop-logger.service
+    content: |
+      [Unit]
+      Description=Radeon GPU usage logger (radeontop)
+      After=multi-user.target
+      [Service]
+      ExecStart=/usr/bin/radeontop -d - -i 1
+      StandardOutput=append:{{ logs_dir }}/radeontop.log
+      StandardError=journal
+      Restart=always
+      RestartSec=2
+      [Install]
+      WantedBy=multi-user.target
+- name: Enable GPU logger
+  systemd: { name: radeontop-logger, daemon_reload: yes, enabled: yes, state: started }
+```
+
+### 7) `roles/verify/tasks/main.yml`
+```yaml
+- name: Wait for service port
+  wait_for: { host: 127.0.0.1, port: "{{ http_port }}", timeout: 60 }
+- name: Healthcheck
+  uri: { url: "http://127.0.0.1:{{ http_port }}/health", return_content: yes }
+  register: health
+- debug: var=health.content
+```
+
+## F) Run
+```bash
+cd sancho-ansible
+ansible -i inventory.ini all -m ping
+ansible-playbook -i inventory.ini site.yml
+```
+
+---
+
+# Troubleshooting
+- **Could NOT find Vulkan (missing: glslc)** → install SDK or build Shaderc (§4).
+- **failed to open GGUF file** → wrong path/name; verify with `find /data/Models -iname '*gguf'`.
+- **Server bound to 127.0.0.1** → ensure `--host 0.0.0.0` in one single line; avoid stray backslashes/blank lines.
+- **OOM / high VRAM** → reduce `--batch-size` (128→64/32), prefer Q4_K_M; consider `-ngl 20/10`.
+- **GPU idle** → export `VK_ICD_FILENAMES=...radeon_icd.x86_64.json`; confirm `vulkaninfo` and `lsof /dev/dri/renderD128` shows `llama-server`.
+
+---
+
+# Future Changes — Firmware 4/12 Split (4 GB system / 12 GB VRAM)
+**What it does**: increases dedicated VRAM to ~12 GB at the expense of system RAM.
+
+**Benefits**
+- Larger `--ctx-size` and/or `--batch-size` possible for Q6_K or higher precision.
+- More headroom for VL mmproj and image prompts.
+
+**Risks / checks**
+- Less system RAM available for the OS and page cache. On 16 GB nodes, dropping to 4 GB system can cause swapping under load.
+- Watch **Cockpit → Memory** and `free -h`. Keep **≥2 GB free** during peak to avoid pressure.
+- If system RAM becomes tight:
+  - Lower `--ctx-size` or `--batch-size` slightly.
+  - Ensure no extra services run (Grafana/Prometheus only where needed).
+
+**Recommended path**
+1. Pilot 2–3 nodes with 4/12 split.
+2. Run sustained workloads (VL Q6_K, `ctx 8192`, `batch 64–128`).
+3. Track: VRAM usage (radeontop), system RAM (Cockpit), response latency, OOM dmesg.
+4. If stable, roll gradually; else revert split.
+
+---
+
+## Useful HTTP endpoints
+- Health: `GET /health` → `{"status":"ok"}`
+- Classic text: `POST /completion` { `prompt`, `n_predict`, ... }
+- OpenAI‑style chat: `POST /v1/chat/completions` { `messages`, `temperature`, ... }
+
+---
+
+**End of runbook (EN)** — validated on Fedora Server 42, AMD RADV (BC‑250), Qwen2.5‑VL‑7B (Q6_K).  
+*Note: screenshots can be attached in a separate bundle if needed.*
+
