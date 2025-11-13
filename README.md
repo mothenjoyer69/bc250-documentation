@@ -2,7 +2,7 @@
 This page is for documentation and information on the ASRock/AMD BC-250, and about running it as a general purpose PC. These are compute units sold in a 4u rackmount chassis for the purpose of crypto mining. Thankfully everyone who bought these for that purpose lost a lot of money and is selling them off for cheap!
 
 # Hardware info
-- Features an AMD BC250 APU, codenamed 'Ariel', a cut-down variant of the APU in the PS5. It integrates 6x Zen 2 cores, at up to 3.49GHz (ish), as well as a 24CU RDNA2 iGPU (Codename 'cyan-skillfish'), as opposed to the 36 available in a standard PS5 Ariel SoC
+- Features an AMD BC250 APU, codenamed 'Ariel', a cut-down variant of the APU in the PS5. It integrates 6x Zen 2 cores, at up to 3.49GHz (ish), as well as a 24CU RDNA2 iGPU (Codename 'cyan-skillfish'). The standard PS5 SoC has 36CUs.
 - 1x M.2 2280 slot with support for NVMe (PCIe 2.0 x2) and SATA 3
 - 1x DisplayPort, 1x GbE Ethernet, 2x USB 2.0, 2x USB 3.0
 - 1x SPI header, 1x auto-start jumper, 1x clear CMOS jumper, 5x fans (non-standard connector), 1x TPM header
@@ -46,9 +46,8 @@ The `F*T` pins are the tachometer outputs from each respective fan, and the `F*P
 
 # OS Support
 - Linux:
-  - Works reasonably well with most hardware functional. Fedora is recommended, however it would be simple to get literally any distro running.
-  - Flatpak applications will NOT* work correctly until they pull in Mesa 25.1. Don't try and run Bazzite just yet.
-  - In theory, a Fedora rawhide image should boot with nothing but the kernel commandline options listed below.
+  - At this point, Linux support is almost perfect. Pretty much any distro shipping a modern kernel + mesa should work fine.
+  - Don't run LTS distros on this hardware.
 - Windows:
   - No
   - It will boot, but the GPU is not supported by any drivers and is unlikely to ever be. Everything else seems to work alright, so I guess if you've been kicked in the head recently you could use it for non-GPU focused workloads.
@@ -56,24 +55,10 @@ The `F*T` pins are the tachometer outputs from each respective fan, and the `F*P
   - Next person to ask this will be asked to find out if the PCIe bracket counts as a flared base.
   
 # Making it work
+It should all just work with any recent release from Fedora/Bazzite etc.
 ## Mesa
-- Upstream support [landed](https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/33116) in Mesa 25.1. If your distro ships this new of a version, or if it has a ``mesa-git`` equivalency, you should be able use them without modification. 
-- You must set ``RADV_DEBUG=nocompute`` in ``/etc/environment`` to resolve issues with Vulkan visual issues.
-- Some OpenGL workloads cause a GPU hang still, and most compute loads will trigger a GPU reset when the compute instance is closed. This would normally be fine, but it is unrecoverable on these boards.
-- Flatpak applications will fail to run due to the bundled mesa not having the required patches. You can temporarily work around this by setting ``FLATPAK_GL_DRIVERS=mesa-git``.
-- If your distro doesn't ship a new enough Mesa, either:
-  - Rebuild Mesa manually with this [this](https://raw.githubusercontent.com/mothenjoyer69/bc250-documentation/refs/heads/main/BC250-mesa.patch) patch.
-  - Alternatively, patched Mesa builds are available via copr, [here](https://copr.fedorainfracloud.org/coprs/g/exotic-soc/bc250-mesa/).
+- Upstream support [landed](https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/33116) in Mesa 25.1. This should be shipped by most big distros at this point
 - You may also need to set ``ttm.pages_limit=3959290`` and ``ttm.page_pool_size=3959290`` as kernel options to access more than 8GB of the shared memory. Thanks Magnap :)
-   
-## Kernel
-- You may need to add ``nomodeset`` to the kernel command line prior to installing the correct mesa version. Don't forget to remove this once they are installed.
-- Kernels older than 6.11ish may need ``amdgpu.sg_display=0`` to be set.
-
-## Simple setup script
-- This script is designed for Fedora 40+ and should set up everything needed properly, except for flashing the modified firmware. Run at your own risk.
-  - ``curl -s https://raw.githubusercontent.com/mothenjoyer69/bc250-documentation/refs/heads/main/fedora-setup.sh | sh``
-- Credit to [neggles](https://github.com/neggles) for the original version.
   
 # Advanced
 ## Modified firmware
@@ -87,10 +72,9 @@ The `F*T` pins are the tachometer outputs from each respective fan, and the `F*P
       [ VCC  CS  MISO  ? ]
          ^
       ```
-- VRAM allocation is configured within: ``Chipset -> GFX Configuration -> GFX Configuration``. Set ``Integrated Graphics Controller`` to forced, and ``UMA Mode`` to  ``UMA_SPECIFIED``, and set the VRAM limit to your desired size. 512MB appears to be the best for general APU use. You will have a worse experience overall with a 4/12 split, outside of specific circumstances. Credit to [Segfault](https://github.com/TuxThePenguin0)
+- VRAM allocation is configured within: ``Chipset -> GFX Configuration -> GFX Configuration``. Set ``Integrated Graphics Controller`` to forced, and ``UMA Mode`` to  ``UMA_SPECIFIED``, and set the VRAM limit to your desired size. 512MB is best for general APU use. You will have a worse experience overall with a 4/12 split, outside of specific circumstances. Credit to [Segfault](https://github.com/TuxThePenguin0)
 - Many of the newly exposed settings are untested, and could either do nothing, or completely obliterate you and everyone else within a 100km radius. Or maybe they work fine. Be careful, though.
-     - There are a number of firmware images floating around with "everything unlocked!". Be very, very cautious of using these.
-- Note: If your board shipped with P4.00G (or any other BIOS revision that modified the memory split) you may need to fully clear the firmware settings as it can apparently get a little stuck. Removing the coin cell and using the CLR_CMOS header should suffice.        
+- Note: If your board shipped with P4.00G (or any other BIOS revision that modified the memory split) you may need to fully clear the firmware settings as it can apparently get a little stuck. Removing the coin cell and using the CLR_CMOS header should suffice.
 
 ## NCT6686 SuperIO
 - In order for ``lm-sensors`` to recognize the chip (ID ``0xd441``), you must load the nct6683 driver. You can so via ``modprobe nct6683 force=true`` or by adding ``options nct6683 force=true`` to ``/etc/modprobe.d/sensors.conf``, and ``nct6683``to ``/etc/modules-load.d/99-sensors.conf`` and regenerate your initramfs.
@@ -98,7 +82,7 @@ The `F*T` pins are the tachometer outputs from each respective fan, and the `F*P
 - Massive thanks to [yeyus](https://github.com/yeyus) for [this info](https://github.com/mothenjoyer69/bc250-documentation/issues/3).
 
 ## Performance
-- A GPU governor is available [here](https://gitlab.com/mothenjoyer69/oberon-governor). You should use it. Values are set in /etc/oberon-config.yaml. The defaults should be fine, but you can bump them up if you are experiencing instability (or want a nice space heater)
+- A GPU governor is available [here](https://gitlab.com/mothenjoyer69/oberon-governor). You should use it. Values are set in /etc/oberon-config.yaml.
   - You can also use the following commands to set the clocks manually:
     ```
     echo vc 0 <CLOCK> <VOLTAGE> > /sys/devices/pci0000:00/0000:00:08.1/0000:01:00.0/pp_od_clk_voltage
@@ -106,9 +90,7 @@ The `F*T` pins are the tachometer outputs from each respective fan, and the `F*P
     ```
 
 # Additional notes:
-- I have repeatedly recieved requests for help from people who have not read through this page correctly. Please do not purchase these boards if any part of this page is confusing. These are not, and will not ever be, standard desktop boards, and expecting them to be is a stupid thing to do.
-- I have seen an alarming number of people I have personally helped out attempt to claim the information uncovered by Segfault as their own. You all suck, credit people properly. Many of these people also seem to fall under the above note.
-- God XDA sucks
+- These boards more or less just work now, and all you need to do is install a distro, install the GPU governor, and then go to town. 
 - Please don't make issues asking for help with anything *but* these boards.
 - A discord server exists [here](https://discord.gg/uDvkhNpxRQ). This is a community of people running and pushing the limits of these boards. Feel free to say hi.
 
