@@ -83,7 +83,6 @@ It should all just work with any recent release from Fedora/Bazzite etc.
 
 ## Performance
 - A GPU governor is available [here](https://gitlab.com/mothenjoyer69/oberon-governor). You should use it. Values are set in /etc/oberon-config.yaml.
-- This is also available as a Fedora COPR package [here](https://copr.fedorainfracloud.org/coprs/g/exotic-soc/oberon-governor/).
   - You can also use the following commands to set the clocks manually:
     ```
     echo vc 0 <CLOCK> <VOLTAGE> > /sys/devices/pci0000:00/0000:00:08.1/0000:01:00.0/pp_od_clk_voltage
