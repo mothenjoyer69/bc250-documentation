@@ -55,12 +55,10 @@ The `F*T` pins are the tachometer outputs from each respective fan, and the `F*P
   - Next person to ask this will be asked to find out if the PCIe bracket counts as a flared base.
   
 # Making it work
-It should all just work with any recent release from Fedora/Bazzite etc. However, HW encode/decode *will not work* because we are missing the required firmware. This probably won't change any time soon, as Sony are the ones blocking this. 
+It should all just work with any recent release from Fedora/Bazzite etc. However, HW encode/decode *will not work* because we are missing the required firmware for the VCN. This probably won't change any time soon, as Sony are the ones blocking this. 
 ## Mesa
 - Upstream support [landed](https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/33116) in Mesa 25.1. This should be shipped by most big distros at this point
 - You may also need to set ``ttm.pages_limit=3959290`` and ``ttm.page_pool_size=3959290`` as kernel options to access more than 8GB of the shared memory. Thanks Magnap :)
-  
-# Advanced
 ## Modified firmware
 ## ***ANY DAMAGE OR ISSUES CAUSED BY FLASHING THIS MODIFIED IMAGE IS YOUR RESPONSIBILITY ENTIRELY***
 - A modified firmware image is available at [this repo](https://gitlab.com/TuxThePenguin0/bc250-bios/) (Credit and massive thanks to [Segfault](https://github.com/TuxThePenguin0)). He is responsible for most of the information on running these boards. Say thank you.
