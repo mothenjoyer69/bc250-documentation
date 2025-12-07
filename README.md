@@ -101,5 +101,5 @@ It should all just work with any recent release from Fedora/Bazzite etc. However
 # WALL OF SHAME!!!!!!!
 1. ![SHAMEFUL](https://github.com/mothenjoyer69/bc250-documentation/blob/main/images/WALL_OF_SHAME_1.png)
 2. ![BOOOOO](https://github.com/mothenjoyer69/bc250-documentation/blob/main/images/WALL_OF_SHAME_2.png)
-3. ![????](https://github.com/mothenjoyer69/bc250-documentation/blob/main/images/WALL_OF_SHAME_2.png)
+3. ![????](https://github.com/mothenjoyer69/bc250-documentation/blob/main/images/WALL_OF_SHAME_3.png)
 
