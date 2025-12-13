@@ -15,7 +15,7 @@ Further connector pinouts and a detailed listing of chip ID can be found on the 
 
 ### Power
 
-`J1000` is a standard 8-pin 12V PCIe power connector and is sufficient
+`J1000` is a standard 8-pin 12V PCIe power connector.
 
 `J2000` and `J2001` are compatible with 8-pin Molex Micro-Fit connectors and are pinned as below:
 
@@ -26,6 +26,10 @@ Further connector pinouts and a detailed listing of chip ID can be found on the 
 ```
 
 For more detail on the non-power pins, check [their section of the hardware page](./hardware.md#j2000-and-j2001).
+
+Keep in mind the BC-250 has a TDP of 220W.
+
+Power and reset buttons are located on the rear I/O.
 
 ### Fans
 
