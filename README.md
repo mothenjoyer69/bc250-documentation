@@ -95,7 +95,7 @@ It should all just work with any recent release from Fedora/Bazzite etc. However
 # Additional notes:
 - These boards more or less just work now, and all you need to do is install a distro, install the GPU governor, and then go to town. 
 - Please don't make issues asking for help with anything *but* these boards.
-- A discord server exists [here](https://discord.gg/uDvkhNpxRQ). This is a community of people running and pushing the limits of these boards. Feel free to say hi.
+- A discord server exists [here](https://discord.gg/8eZfFWhczz). This is a community of people running and pushing the limits of these boards. Feel free to say hi.
 
 # Credits
 - [Segfault](https://github.com/TuxThePenguin0)
