@@ -20,9 +20,10 @@ Further connector pinouts and a detailed listing of chip ID can be found on the 
 `J2000` and `J2001` are compatible with 8-pin Molex Micro-Fit connectors and are pinned as below:
 
 ```
+        J2000                J2001
    v                     v
-[ LED1 12V 12V 12V ]  [ 12V 12V 12V GND ]
-[ LED2 GND GND GND ]  [ GND GND GND PGD ]
+[ LED1 12V 12V 12V ]  [ 12V 12V 12V PGD ]
+[ LED2 GND GND GND ]  [ GND GND GND GND ]
 ```
 
 For more detail on the non-power pins, check [their section of the hardware page](./hardware.md#j2000-and-j2001).

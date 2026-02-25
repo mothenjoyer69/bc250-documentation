@@ -80,9 +80,10 @@ This is a normal four-pin PWM-capable fan header.
 
 As viewed with the PCB "down"
 ```
+        J2000                J2001
    v                     v
-[ LED1 12V 12V 12V ]  [ 12V 12V 12V GND ]
-[ LED2 GND GND GND ]  [ GND GND GND PGD ]
+[ LED1 12V 12V 12V ]  [ 12V 12V 12V PGD ]
+[ LED2 GND GND GND ]  [ GND GND GND GND ]
 ```
 
 | Pin | Purpose |
@@ -90,6 +91,8 @@ As viewed with the PCB "down"
 | `PGD`  | `PGOOD`; 5V when PSU2 is connected to the rack chassis |
 | `LED1` | Active-low LED output; mirrors green backplane LED |
 | `LED2` | Active-low LED output; mirrors red backplane LED |
+
+Note that shorting `PGOOD` to ground will power off the BC-250 blades
 
 These connectors are manufactured by ALLTOP but are directly interchangeable with the [444280801](https://www.molex.com/en-us/products/part-detail/444280801) Molex Micro-Fit BMI headers.
 
@@ -103,10 +106,14 @@ If you decide to power the BC-250 from these connectors, I recommend using both 
 
 ```
 [ GND GND GND GND ]
-[ 12V 12V 12V GND ]
+[ GND 12V 12V 12V ]
 ```
 
-This is a standard 8-pin PCIe connector and is perfectly suitable for powering a BC-250.
+This is a standard 8-pin PCIe connector and is suitable for powering a BC-250 provided that you have large-gauge wires run to it. 16AWG is recommended, but if your power supply has two 8-pin connectors daisy-chained off the same cable, that cable should be fine for normal BC-250 usage (each 8-pin connector can supply 150W, so that cable has to be able to source 300W).
+
+With respect to maximum power draw though just this connector, MiniFit Jr contacts like these can support up to 9A each, meaning that this connector with three power contacts can source up to 324W safely. Some MiniFit Jr contacts can handle up to 13A each, bumping that total to 468W, but these are targeted toward industrial applications and are unlikely to be used in a consumer power supply.
+
+For high-power applications such as overclocking, it is recommended to solder directly to the board or create adapter cables to supply power via J2000 and J2001 in addition to J1000.
 
 ## J4004
 
@@ -160,7 +167,7 @@ DBRDY1 -- [ 15  16 ] -- DBREQ_L
  VDDIO -- [ 19  20 ] -- TEST18
 ```
 
-Note that pins `TEST18`, `TEST19`, `DBRDY0` are left floating on this PCB.
+Note that pins `TEST18`, `TEST19`, `DBRDY0` are left floating on the BC-250 PCB.
 
 # Auxiliary Chip ID
 
