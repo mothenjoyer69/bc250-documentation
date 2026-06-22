@@ -34,7 +34,7 @@ The SCL pin is on the "lower" side of the board, closer to the power connectors.
 
 This exposes an I2C interface which appears to host PMBUS communications to the Intersil PMICs.
 
-## SPERAKER1 / J5
+## SPEAKER1 / J5
 
 ```
 [  -   -   -   -  ]
