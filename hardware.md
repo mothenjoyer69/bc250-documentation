@@ -34,6 +34,28 @@ The SCL pin is on the "lower" side of the board, closer to the power connectors.
 
 This exposes an I2C interface which appears to host PMBUS communications to the Intersil PMICs.
 
+## SPERAKER1 / J5
+
+```
+[  -   -   -   -  ]
+[ 3V3 GND RX  TX  ]
+   ^
+```
+
+The unpopulated header J5 exposes a UART serial port provided by the SuperIO chip.
+Note that J5 is the lower row, under SPEAKER1.
+
+* TX: 3.3V signal.
+* RX: Tolerates TTL according to datasheet.
+
+Typically available in Linux as `/dev/ttyS0`. (Port 0x3F8, IRQ 4)
+Check `sudo dmesg | grep tty` to find confirm the device path assignment.
+
+
+Note that the RX IRQ does not seem to be working correctly,
+so you must use set it to polling mode with `sudo setserial /dev/ttyS0 irq 0` to recieve any data.
+This is a CPU hog so only set this when you really need to do serial things (set it back to `irq 4` when you are done)
+
 ## J4003
 
 ```
