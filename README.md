@@ -84,6 +84,13 @@ It should all just work with any recent release from Fedora/Bazzite etc. However
 - Once enabled you should see a bunch more sensor data reported, including important temps :)
 - Massive thanks to [yeyus](https://github.com/yeyus) for [this info](https://github.com/mothenjoyer69/bc250-documentation/issues/3).
 
+The SuperIO chip also provides a UART port on header J5.
+- Typically available in Linux as `/dev/ttyS0`. (Port 0x3F8, IRQ 4)
+    - Check `sudo dmesg | grep tty` to confirm the device path assignment.
+- Note that RX does not work out of the box because the IRQ does not seem functinal.
+    - To recieve data you must set it to polling mode with `sudo setserial /dev/ttyS0 irq 0` to recieve any data.
+    - This is a CPU hog so only set this when you really need to do serial things (set it back to `irq 4` when you are done)
+
 ## Performance
 - A GPU governor is available [here](https://gitlab.com/mothenjoyer69/oberon-governor). You should use it. Values are set in /etc/oberon-config.yaml.
 - This is also available as a Fedora COPR package [here](https://copr.fedorainfracloud.org/coprs/g/exotic-soc/oberon-governor/).
