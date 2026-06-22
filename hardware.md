@@ -46,7 +46,7 @@ The unpopulated header J5 exposes a UART serial port provided by the SuperIO chi
 Note that J5 is the lower row, under SPEAKER1.
 
 * TX: 3.3V signal.
-* RX: Tolerates TTL according to datasheet.
+* RX: Tolerates 5V / TTL according to datasheet.
 
 ## J4003
 
