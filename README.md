@@ -87,7 +87,7 @@ It should all just work with any recent release from Fedora/Bazzite etc. However
 The SuperIO chip also provides a UART port on header J5.
 - Typically available in Linux as `/dev/ttyS0`. (Port 0x3F8, IRQ 4)
     - Check `sudo dmesg | grep tty` to confirm the device path assignment.
-- Note that RX does not work out of the box because the IRQ does not seem functinal.
+- Note that RX does not work out of the box because the IRQ does not seem functional.
     - To recieve data you must set it to polling mode with `sudo setserial /dev/ttyS0 irq 0`
     - This is a CPU hog so only set this when you really need to do serial things (set it back to `irq 4` when you are done)
 
