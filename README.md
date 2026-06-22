@@ -5,7 +5,7 @@ This page is for documentation and information on the ASRock/AMD BC-250, and abo
 - Features an AMD BC250 APU, codenamed 'Ariel', a cut-down variant of the APU in the PS5. It integrates 6x Zen 2 cores, at up to 3.49GHz (ish), as well as a 24CU RDNA2 iGPU (Codename 'cyan-skillfish'). The standard PS5 SoC has 36CUs.
 - 1x M.2 2280 slot with support for NVMe (PCIe 2.0 x2) and SATA 3
 - 1x DisplayPort, 1x GbE Ethernet, 2x USB 2.0, 2x USB 3.0
-- 1x SPI header, 1x auto-start jumper, 1x clear CMOS jumper, 5x fans (non-standard connector), 1x TPM header
+- 1x SPI header, 1x UART header, 1x auto-start jumper, 1x clear CMOS jumper, 5x fans (non-standard connector), 1x TPM header
 - NCT6686 SuperIO chip
 - 220W TDP, so make sure you have a good quality power supply with PCIe 8-pin connectors available and a plan for cooling it. You can, in a pinch, get away with directly placing two 120mm fans directly on top of the heatsink. If you are doing custom cooling, don't forget the memory!!! Its GDDR6 it runs really hot!!!!
 
@@ -83,6 +83,13 @@ It should all just work with any recent release from Fedora/Bazzite etc. However
 - In order for ``lm-sensors`` to recognize the chip (ID ``0xd441``), you must load the nct6683 driver. You can so via ``modprobe nct6683 force=true`` or by adding ``options nct6683 force=true`` to ``/etc/modprobe.d/sensors.conf``, and ``nct6683``to ``/etc/modules-load.d/99-sensors.conf`` and regenerate your initramfs.
 - Once enabled you should see a bunch more sensor data reported, including important temps :)
 - Massive thanks to [yeyus](https://github.com/yeyus) for [this info](https://github.com/mothenjoyer69/bc250-documentation/issues/3).
+
+The SuperIO chip also provides a UART port on header J5.
+- Typically available in Linux as `/dev/ttyS0`. (Port 0x3F8, IRQ 4)
+    - Check `sudo dmesg | grep tty` to confirm the device path assignment.
+- Note that RX does not work out of the box because the IRQ does not seem functional.
+    - To recieve data you must set it to polling mode with `sudo setserial /dev/ttyS0 irq 0`
+    - This is a CPU hog so only set this when you really need to do serial things (set it back to `irq 4` when you are done)
 
 ## Performance
 - A GPU governor is available [here](https://gitlab.com/mothenjoyer69/oberon-governor). You should use it. Values are set in /etc/oberon-config.yaml.

@@ -34,6 +34,20 @@ The SCL pin is on the "lower" side of the board, closer to the power connectors.
 
 This exposes an I2C interface which appears to host PMBUS communications to the Intersil PMICs.
 
+## SPEAKER1 / J5
+
+```
+[  -   -   -   -  ]
+[ 3V3 GND RX  TX  ]
+   ^
+```
+
+The unpopulated header J5 exposes a UART serial port provided by the SuperIO chip.
+Note that J5 is the lower row, under SPEAKER1.
+
+* TX: 3.3V signal.
+* RX: Tolerates 5V / TTL according to datasheet.
+
 ## J4003
 
 ```
