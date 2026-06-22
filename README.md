@@ -5,8 +5,8 @@ This page is for documentation and information on the ASRock/AMD BC-250, and abo
 - Features an AMD BC250 APU, codenamed 'Ariel', a cut-down variant of the APU in the PS5. It integrates 6x Zen 2 cores, at up to 3.49GHz (ish), as well as a 24CU RDNA2 iGPU (Codename 'cyan-skillfish'). The standard PS5 SoC has 36CUs.
 - 1x M.2 2280 slot with support for NVMe (PCIe 2.0 x2) and SATA 3
 - 1x DisplayPort, 1x GbE Ethernet, 2x USB 2.0, 2x USB 3.0
-- 1x SPI header, 1x auto-start jumper, 1x clear CMOS jumper, 5x fans (non-standard connector), 1x TPM header
-- NCT6686 SuperIO chip, with a UART port mapped to header J5.
+- 1x SPI header, 1x UART header, 1x auto-start jumper, 1x clear CMOS jumper, 5x fans (non-standard connector), 1x TPM header
+- NCT6686 SuperIO chip
 - 220W TDP, so make sure you have a good quality power supply with PCIe 8-pin connectors available and a plan for cooling it. You can, in a pinch, get away with directly placing two 120mm fans directly on top of the heatsink. If you are doing custom cooling, don't forget the memory!!! Its GDDR6 it runs really hot!!!!
 
 ## Hardware Details
