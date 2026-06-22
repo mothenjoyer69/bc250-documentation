@@ -49,7 +49,7 @@ Note that J5 is the lower row, under SPEAKER1.
 * RX: Tolerates TTL according to datasheet.
 
 Typically available in Linux as `/dev/ttyS0`. (Port 0x3F8, IRQ 4)
-Check `sudo dmesg | grep tty` to find confirm the device path assignment.
+Check `sudo dmesg | grep tty` to confirm the device path assignment.
 
 
 Note that the RX IRQ does not seem to be working correctly,
