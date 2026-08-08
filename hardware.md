@@ -27,7 +27,7 @@ Jump pins 2 and 3 to depower the circuit and clear your CMOS settings.
 ## I2C_HEADER1
 
 ```
-> [ SCL SDA GND ]
+> [ SDA SCL GND ]
 ```
 
 The SCL pin is on the "lower" side of the board, closer to the power connectors.
